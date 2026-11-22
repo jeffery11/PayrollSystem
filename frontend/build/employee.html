@@ -1,0 +1,1699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal - PayHR</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-animation .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            animation: float 20s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-50px) rotate(180deg); }
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .logo-icon i {
+            font-size: 22px;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* User Menu */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 8px 16px 8px 12px;
+            border-radius: 50px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .user-role {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        /* Navigation */
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 60px;
+            padding: 0.5rem;
+            margin-top: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            background: transparent;
+        }
+
+        .nav-tab:hover {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon.blue { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #2563eb; }
+        .stat-icon.green { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #10b981; }
+        .stat-icon.purple { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #8b5cf6; }
+        .stat-icon.orange { background: linear-gradient(135deg, #fed7aa, #fdba74); color: #f97316; }
+
+        .stat-label {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1e293b;
+        }
+
+        .stat-sub {
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 8px;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .card-title i {
+            margin-right: 8px;
+            color: #667eea;
+        }
+
+        /* AI Chat Assistant - Enhanced Design */
+        #chat-widget {
+            font-family: 'Inter', sans-serif;
+        }
+
+        #chat-toggle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        #chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4); }
+            50% { box-shadow: 0 4px 30px rgba(102, 126, 234, 0.6); }
+            100% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4); }
+        }
+
+        #chat-window {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        #chat-window .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 18px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #chat-window .chat-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .chat-header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header-title i {
+            font-size: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .chat-header-title h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .chat-header-subtitle {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .chat-close {
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+
+        .chat-close:hover {
+            transform: rotate(90deg);
+        }
+
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--main-bg);
+            color: var(--text-primary);
+        }
+
+        .bot-message {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            animation: slideInLeft 0.3s ease;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .bot-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .bot-avatar i {
+            font-size: 18px;
+            color: white;
+        }
+
+        .bot-bubble {
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-top-left-radius: 4px;
+            max-width: 85%;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .user-message {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .user-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-top-right-radius: 4px;
+            max-width: 85%;
+            font-size: 13px;
+            line-height: 1.5;
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: #cbd5e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .user-avatar i {
+            font-size: 18px;
+            color: #64748b;
+        }
+
+        .quick-questions {
+            padding: 12px 16px;
+            background: var(--main-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quick-q {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .quick-q:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            border-color: transparent;
+        }
+
+        .chat-input-area {
+            padding: 16px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            font-size: 13px;
+            background: var(--main-bg);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+
+        .chat-send {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .chat-send i {
+            font-size: 18px;
+            color: white;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 6px;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border-radius: 18px;
+            border-top-left-radius: 4px;
+            width: fit-content;
+            border: 1px solid var(--border);
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        #chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #chat-messages::-webkit-scrollbar-track {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 480px) {
+            #chat-window {
+                width: calc(100vw - 40px);
+                right: 0;
+                bottom: 80px;
+                height: 550px;
+            }
+
+            .quick-q {
+                font-size: 10px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* Payslip Items */
+        .payslip-item {
+            background: #f8fafc;
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            border: 1px solid #e2e8f0;
+        }
+
+        .payslip-item:hover {
+            background: #f1f5f9;
+            transform: translateX(5px);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fed7aa; color: #9a3412; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #64748b;
+        }
+
+        .btn-outline:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Leave Items */
+        .leave-item {
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 8px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8;
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid #667eea;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 1rem; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+            .info-grid { grid-template-columns: 1fr; }
+            .stat-value { font-size: 24px; }
+            .nav-tabs { flex-wrap: wrap; justify-content: center; }
+            .nav-tab { padding: 0.5rem 1rem; font-size: 12px; }
+            .header-content { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-animation">
+        <div class="circle" style="width: 300px; height: 300px; top: -100px; right: -100px; animation-duration: 25s;"></div>
+        <div class="circle" style="width: 200px; height: 200px; bottom: 100px; left: -50px; animation-duration: 20s;"></div>
+        <div class="circle" style="width: 150px; height: 150px; bottom: 200px; right: 150px; animation-duration: 30s;"></div>
+    </div>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-building"></i>
+                </div>
+                <div class="logo-text">PayHR</div>
+            </div>
+            <div class="user-menu">
+                <div class="user-card">
+                    <div class="user-avatar" id="user-avatar">U</div>
+                    <div>
+                        <div class="user-name" id="user-name">Loading...</div>
+                        <div class="user-role">Employee Portal</div>
+                    </div>
+                </div>
+                <button id="theme-toggle" class="btn btn-outline" style="padding: 8px 12px;">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button onclick="logout()" class="btn btn-outline" style="padding: 8px 12px;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" data-page="dashboard">📊 Dashboard</button>
+            <button class="nav-tab" data-page="payslips">📄 My Payslips</button>
+            <button class="nav-tab" data-page="leave">🌴 Leave Management</button>
+            <button class="nav-tab" data-page="profile">👤 My Profile</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue"><i class="fas fa-money-bill-wave"></i></div>
+                    <div class="stat-label">Total Earned</div>
+                    <div class="stat-value" id="total-earned">-</div>
+                    <div class="stat-sub">All time earnings</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon green"><i class="fas fa-file-invoice"></i></div>
+                    <div class="stat-label">Payslips</div>
+                    <div class="stat-value" id="payslip-count">-</div>
+                    <div class="stat-sub">Generated so far</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon purple"><i class="fas fa-calendar-alt"></i></div>
+                    <div class="stat-label">Last Payslip</div>
+                    <div class="stat-value" id="last-payslip">-</div>
+                    <div class="stat-sub">Most recent amount</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon orange"><i class="fas fa-chart-line"></i></div>
+                    <div class="stat-label">Monthly Salary</div>
+                    <div class="stat-value" id="monthly-salary">-</div>
+                    <div class="stat-sub">Base salary</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fas fa-user-circle"></i> My Information</span>
+                </div>
+                <div id="employee-info"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fas fa-history"></i> Recent Payslips</span>
+                </div>
+                <div id="recent-payslips"></div>
+            </div>
+        </div>
+
+        <!-- Payslips Page -->
+        <div id="page-payslips" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fas fa-file-invoice"></i> All Payslips</span>
+                </div>
+                <div id="payslips-list"></div>
+            </div>
+        </div>
+
+        <!-- Leave Page -->
+        <div id="page-leave" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fas fa-calendar-alt"></i> Leave Balances</span>
+                </div>
+                <div id="leave-balances"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fas fa-plus-circle"></i> Request Leave</span>
+                </div>
+                <div class="form-group">
+                    <label>Leave Type</label>
+                    <select id="leave-type" onchange="updateLeaveBalanceInfo()">
+                        <option value="1">🏖️ Annual Leave (22 days)</option>
+                        <option value="2">🤒 Sick Leave (12 days)</option>
+                        <option value="3">👶 Maternity Leave (90 days)</option>
+                        <option value="4">👨‍👦 Paternity Leave (10 days)</option>
+                        <option value="5">💔 Bereavement Leave (5 days)</option>
+                        <option value="6">⏸️ Unpaid Leave</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Start Date</label>
+                    <input type="date" id="leave-start" onchange="calculateLeaveDays()">
+                </div>
+                <div class="form-group">
+                    <label>End Date</label>
+                    <input type="date" id="leave-end" onchange="calculateLeaveDays()">
+                </div>
+                <div id="leave-days-container"></div>
+                <div class="form-group">
+                    <label>Reason</label>
+                    <textarea id="leave-reason" rows="3" placeholder="Reason for leave..."></textarea>
+                </div>
+                <button class="btn btn-primary" onclick="submitLeaveRequest()">📤 Submit Request</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fas fa-list"></i> My Leave Requests</span>
+                </div>
+                <div id="leave-requests"></div>
+            </div>
+        </div>
+
+        <!-- Profile Page -->
+        <div id="page-profile" class="page">
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fas fa-user-edit"></i> Personal Information</span>
+                </div>
+                <div class="form-group">
+                    <label>📱 Phone Number</label>
+                    <input type="tel" id="profile-phone" placeholder="024XXXXXXX">
+                </div>
+                <div class="form-group">
+                    <label>🏦 Bank Name</label>
+                    <input type="text" id="profile-bank-name" placeholder="e.g., GCB Bank">
+                </div>
+                <div class="form-group">
+                    <label>💳 Bank Account Number</label>
+                    <input type="text" id="profile-bank-account" placeholder="Account number">
+                </div>
+                <button class="btn btn-primary" onclick="updateProfile()">💾 Update Profile</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fas fa-lock"></i> Change Password</span>
+                </div>
+                <div class="form-group">
+                    <label>Current Password</label>
+                    <input type="password" id="current-password">
+                </div>
+                <div class="form-group">
+                    <label>New Password</label>
+                    <input type="password" id="new-password">
+                </div>
+                <div class="form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirm-password">
+                </div>
+                <button class="btn btn-primary" onclick="changePassword()">🔑 Change Password</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification-container"></div>
+
+    <script>
+        const API_URL = 'http://localhost:5001/api';
+        let currentUser = null;
+
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            if (!token || !user) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            currentUser = JSON.parse(user);
+            document.getElementById('user-avatar').textContent = (currentUser.name || currentUser.username).charAt(0).toUpperCase();
+            document.getElementById('user-name').textContent = currentUser.name || currentUser.username;
+            return true;
+        }
+
+        async function authenticatedFetch(url, options = {}) {
+            const token = localStorage.getItem('token');
+            const response = await fetch(url, {
+                ...options,
+                headers: { 'Content-Type': 'application/json', 'x-auth-token': token, ...options.headers }
+            });
+            if (response.status === 401) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = 'login.html';
+                throw new Error('Session expired');
+            }
+            return response;
+        }
+
+        function formatCurrency(amount) {
+            return 'GH₵ ' + Math.round(amount || 0).toLocaleString();
+        }
+
+        function showNotification(message, type = 'success') {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}" style="color: ${type === 'success' ? '#10b981' : '#ef4444'};"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            container.appendChild(notification);
+            setTimeout(() => notification.remove(), 5000);
+        }
+
+        async function loadDashboard() {
+            try {
+                const response = await authenticatedFetch(`${API_URL}/employee/dashboard`);
+                const data = await response.json();
+                
+                document.getElementById('total-earned').innerHTML = formatCurrency(data.summary.totalEarned);
+                document.getElementById('payslip-count').innerHTML = data.summary.payslipCount;
+                document.getElementById('last-payslip').innerHTML = formatCurrency(data.summary.lastPayslipAmount);
+                document.getElementById('monthly-salary').innerHTML = formatCurrency(data.employee.basicSalary);
+                
+                let infoHtml = '<div class="info-grid">';
+                infoHtml += `<div class="info-item"><span class="info-label">Full Name</span><span class="info-value">${data.employee.name}</span></div>`;
+                infoHtml += `<div class="info-item"><span class="info-label">Position</span><span class="info-value">${data.employee.position}</span></div>`;
+                infoHtml += `<div class="info-item"><span class="info-label">Department</span><span class="info-value">${data.employee.department}</span></div>`;
+                infoHtml += `<div class="info-item"><span class="info-label">Email</span><span class="info-value">${data.employee.email}</span></div>`;
+                infoHtml += `<div class="info-item"><span class="info-label">Phone</span><span class="info-value">${data.employee.phone || 'Not provided'}</span></div>`;
+                infoHtml += `<div class="info-item"><span class="info-label">Hire Date</span><span class="info-value">${data.employee.hireDate}</span></div>`;
+                infoHtml += `<div class="info-item"><span class="info-label">Basic Salary</span><span class="info-value">${formatCurrency(data.employee.basicSalary)}</span></div>`;
+                infoHtml += '</div>';
+                document.getElementById('employee-info').innerHTML = infoHtml;
+                
+                if (data.recentPayslips && data.recentPayslips.length) {
+                    let html = '';
+                    data.recentPayslips.forEach(slip => {
+                        html += `
+                            <div class="payslip-item">
+                                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                                    <div>
+                                        <strong>${slip.period}</strong>
+                                        <div><small>${formatCurrency(slip.net)}</small></div>
+                                    </div>
+                                    <button class="btn btn-outline" style="padding: 6px 12px;" onclick="downloadPayslip(${slip.id})">
+                                        <i class="fas fa-download"></i> PDF
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('recent-payslips').innerHTML = html;
+                } else {
+                    document.getElementById('recent-payslips').innerHTML = '<div class="empty-state"><i class="fas fa-file-invoice"></i><p>No payslips yet</p></div>';
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadPayslips() {
+            try {
+                const response = await authenticatedFetch(`${API_URL}/payroll/payslips`);
+                const data = await response.json();
+                const myPayslips = data.payslips.filter(p => p.employeeId === currentUser.employeeId);
+                
+                if (!myPayslips.length) {
+                    document.getElementById('payslips-list').innerHTML = '<div class="empty-state"><i class="fas fa-file-invoice"></i><p>No payslips available</p></div>';
+                    return;
+                }
+                
+                let html = '';
+                myPayslips.forEach(slip => {
+                    html += `
+                        <div class="payslip-item">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                                <div>
+                                    <strong>${slip.period}</strong>
+                                    <div><small>${slip.position} · ${slip.department}</small></div>
+                                    <div style="margin-top: 8px;">
+                                        <small>Gross: ${formatCurrency(slip.gross)}</small> |
+                                        <small>SSNIT: ${formatCurrency(slip.ssnit)}</small> |
+                                        <small>Tax: ${formatCurrency(slip.tax)}</small>
+                                    </div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 20px; font-weight: bold; color: #10b981;">${formatCurrency(slip.net)}</div>
+                                    <button class="btn btn-primary" style="margin-top: 8px; padding: 6px 12px;" onclick="downloadPayslip(${slip.id})">
+                                        <i class="fas fa-download"></i> Download PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('payslips-list').innerHTML = html;
+            } catch (error) {
+                document.getElementById('payslips-list').innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle"></i><p>Error loading payslips</p></div>';
+            }
+        }
+
+        async function loadLeaveBalances() {
+            try {
+                const response = await authenticatedFetch(`${API_URL}/employee/dashboard`);
+                const data = await response.json();
+                
+                if (!data.leaveBalances || !data.leaveBalances.length) {
+                    document.getElementById('leave-balances').innerHTML = '<div class="empty-state"><i class="fas fa-calendar-alt"></i><p>No leave balances</p></div>';
+                    return;
+                }
+                
+                let html = '';
+                data.leaveBalances.forEach(b => {
+                    const percentage = (b.usedDays / b.totalDays) * 100;
+                    let statusClass = 'badge-success';
+                    if (b.remainingDays <= 0) statusClass = 'badge-danger';
+                    else if (b.remainingDays <= 5) statusClass = 'badge-warning';
+                    
+                    html += `
+                        <div class="leave-item">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                <strong>${b.leaveType?.name || 'Leave'}</strong>
+                                <span class="badge ${statusClass}">${b.remainingDays} days left</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: ${percentage}%;"></div>
+                            </div>
+                            <div style="font-size: 12px; color: #64748b; margin-top: 8px;">
+                                Used: ${b.usedDays} of ${b.totalDays} days
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('leave-balances').innerHTML = html;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function loadLeaveRequests() {
+            try {
+                const response = await authenticatedFetch(`${API_URL}/employee/dashboard`);
+                const data = await response.json();
+                
+                if (!data.leaveRequests || !data.leaveRequests.length) {
+                    document.getElementById('leave-requests').innerHTML = '<div class="empty-state"><i class="fas fa-list"></i><p>No leave requests</p></div>';
+                    return;
+                }
+                
+                let html = '';
+                data.leaveRequests.forEach(r => {
+                    let statusClass = 'badge-warning';
+                    if (r.status === 'Approved') statusClass = 'badge-success';
+                    if (r.status === 'Rejected') statusClass = 'badge-danger';
+                    
+                    html += `
+                        <div class="payslip-item">
+                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                                <div>
+                                    <strong>${r.leaveType?.name || 'Leave'}</strong>
+                                    <div><small>${r.startDate} to ${r.endDate} (${r.days} days)</small></div>
+                                    ${r.reason ? `<div><small>Reason: ${r.reason}</small></div>` : ''}
+                                </div>
+                                <span class="badge ${statusClass}">${r.status}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                document.getElementById('leave-requests').innerHTML = html;
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function submitLeaveRequest() {
+            const data = {
+                leaveTypeId: parseInt(document.getElementById('leave-type').value),
+                startDate: document.getElementById('leave-start').value,
+                endDate: document.getElementById('leave-end').value,
+                reason: document.getElementById('leave-reason').value
+            };
+            
+            if (!data.startDate || !data.endDate) {
+                showNotification('Please select dates', 'error');
+                return;
+            }
+            
+            try {
+                const response = await authenticatedFetch(`${API_URL}/employee/leave-request`, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showNotification('Leave request submitted!');
+                    document.getElementById('leave-start').value = '';
+                    document.getElementById('leave-end').value = '';
+                    document.getElementById('leave-reason').value = '';
+                    document.getElementById('leave-days-container').innerHTML = '';
+                    loadLeaveBalances();
+                    loadLeaveRequests();
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error submitting request', 'error');
+            }
+        }
+
+        // Add these functions for leave day calculation
+        function calculateLeaveDays() {
+            const startDate = document.getElementById('leave-start').value;
+            const endDate = document.getElementById('leave-end').value;
+            
+            if (startDate && endDate) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                
+                if (end < start) {
+                    showNotification('End date cannot be before start date', 'error');
+                    document.getElementById('leave-end').value = '';
+                    return;
+                }
+                
+                const diffTime = Math.abs(end - start);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+                
+                let daysDisplay = document.getElementById('leave-days-display');
+                if (!daysDisplay) {
+                    const container = document.getElementById('leave-days-container');
+                    if (container) {
+                        container.innerHTML = `<div id="leave-days-display" style="background: linear-gradient(135deg, #e0e7ff, #ede9fe); padding: 16px; border-radius: 16px; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-weight: 600;">📅 Total Days Requested</span>
+                                <span style="font-size: 28px; font-weight: 800; color: #667eea;">${diffDays}</span>
+                            </div>
+                            <div style="font-size: 12px; color: #64748b;">
+                                ${start.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} 
+                                → 
+                                ${end.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                            </div>
+                            <div style="margin-top: 8px;">
+                                <span class="badge badge-info">${diffDays} day${diffDays !== 1 ? 's' : ''}</span>
+                            </div>
+                        </div>`;
+                    }
+                } else {
+                    daysDisplay.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <span style="font-weight: 600;">📅 Total Days Requested</span>
+                            <span style="font-size: 28px; font-weight: 800; color: #667eea;">${diffDays}</span>
+                        </div>
+                        <div style="font-size: 12px; color: #64748b;">
+                            ${start.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} 
+                            → 
+                            ${end.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <span class="badge badge-info">${diffDays} day${diffDays !== 1 ? 's' : ''}</span>
+                        </div>
+                    `;
+                }
+                
+                // Check if exceeds available balance
+                const selectedLeaveType = document.getElementById('leave-type').value;
+                const balanceElement = document.querySelector(`.leave-item:first-child .badge`);
+                if (balanceElement) {
+                    const balanceText = balanceElement.textContent;
+                    const availableDays = parseInt(balanceText);
+                    if (!isNaN(availableDays) && diffDays > availableDays) {
+                        showNotification(`⚠️ Warning: You're requesting ${diffDays} days but only have ${availableDays} days available!`, 'error');
+                    }
+                }
+            }
+        }
+
+        function updateLeaveBalanceInfo() {
+            const leaveType = document.getElementById('leave-type').value;
+            const leaveBalances = document.querySelectorAll('.leave-item');
+            
+            leaveBalances.forEach(balance => {
+                const balanceText = balance.querySelector('strong')?.textContent;
+                if (balanceText && (
+                    (leaveType === '1' && balanceText.includes('Annual')) ||
+                    (leaveType === '2' && balanceText.includes('Sick')) ||
+                    (leaveType === '3' && balanceText.includes('Maternity')) ||
+                    (leaveType === '4' && balanceText.includes('Paternity')) ||
+                    (leaveType === '5' && balanceText.includes('Bereavement'))
+                )) {
+                    const remainingSpan = balance.querySelector('.badge');
+                    if (remainingSpan) {
+                        const daysLeft = remainingSpan.textContent;
+                        showNotification(`📊 Available balance for this leave type: ${daysLeft}`, 'info');
+                    }
+                }
+            });
+        }
+
+        async function updateProfile() {
+            const data = {
+                phone: document.getElementById('profile-phone').value,
+                bank_name: document.getElementById('profile-bank-name').value,
+                bank_account: document.getElementById('profile-bank-account').value
+            };
+            
+            try {
+                const response = await authenticatedFetch(`${API_URL}/employee/profile`, {
+                    method: 'PUT',
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showNotification('Profile updated successfully!');
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error updating profile', 'error');
+            }
+        }
+
+        async function changePassword() {
+            const current = document.getElementById('current-password').value;
+            const newPass = document.getElementById('new-password').value;
+            const confirm = document.getElementById('confirm-password').value;
+            
+            if (!current || !newPass) {
+                showNotification('Please fill all fields', 'error');
+                return;
+            }
+            if (newPass !== confirm) {
+                showNotification('New passwords do not match', 'error');
+                return;
+            }
+            if (newPass.length < 6) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            try {
+                const response = await authenticatedFetch(`${API_URL}/employee/change-password`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ currentPassword: current, newPassword: newPass })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    showNotification('Password changed successfully!');
+                    document.getElementById('current-password').value = '';
+                    document.getElementById('new-password').value = '';
+                    document.getElementById('confirm-password').value = '';
+                } else {
+                    showNotification(result.message, 'error');
+                }
+            } catch (error) {
+                showNotification('Error changing password', 'error');
+            }
+        }
+
+        async function downloadPayslip(id) {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${API_URL}/payroll/payslip-pdf/${id}`, {
+                headers: { 'x-auth-token': token }
+            });
+            if (response.ok) {
+                const html = await response.text();
+                const win = window.open();
+                win.document.write(html);
+                win.document.close();
+            } else {
+                showNotification('Error downloading payslip', 'error');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const page = tab.dataset.page;
+                document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(`page-${page}`).classList.add('active');
+                
+                if (page === 'dashboard') loadDashboard();
+                else if (page === 'payslips') loadPayslips();
+                else if (page === 'leave') {
+                    loadLeaveBalances();
+                    loadLeaveRequests();
+                }
+            });
+        });
+
+        // Initialize
+        if (checkAuth()) {
+            loadDashboard();
+            loadPayslips();
+            loadLeaveBalances();
+            loadLeaveRequests();
+        }
+
+        // ==================== AI CHAT ASSISTANT ====================
+        const knowledgeBase = {
+            'leave': "You can check your leave balance in the Leave Management section. To request leave, go to Leave Management, select dates, and submit. Your request will be sent to HR for approval.",
+            'leave balance': "Your leave balance is displayed in the Leave Management tab. You can see how many days you have remaining for each leave type (Annual, Sick, etc.).",
+            'how many leave days': "Please check your leave balance in the Leave Management section. The available days are shown with a progress bar.",
+            'request leave': "To request leave: 1) Go to Leave Management, 2) Select leave type, 3) Choose start and end dates, 4) Add reason, 5) Click Submit Request. HR will review your request.",
+            'payslip': "You can download your payslip from the Payslips section. Click 'Download PDF' next to any payslip to save it.",
+            'download payslip': "Go to Payslips page, find the payslip you want, and click the 'Download PDF' button. The file will open in a new tab where you can save or print it.",
+            'my payslip': "Your payslips are available in the Payslips section. You can view and download all your past payslips there.",
+            'payroll': "Payroll is processed monthly on the 5th of each month. You'll receive your payslip via email and can view it in the portal.",
+            'when is payroll': "Payroll is processed on the 5th of every month. If the 5th falls on a weekend, it's processed on the previous Friday.",
+            'salary': "Your salary information is displayed on your Dashboard. You can also view detailed breakdown in your payslips.",
+            'my salary': "Your basic monthly salary is shown on your Dashboard. For detailed breakdown including deductions, check your payslips.",
+            'payment date': "Salary payments are made on the 5th of each month. The funds are transferred to your registered bank account.",
+            'tax': "Tax (PAYE) is calculated based on Ghana's progressive tax system. Rates range from 0% to 30% depending on your income bracket.",
+            'ssnit': "SSNIT contribution is 5.5% of your gross salary. This is deducted automatically each month.",
+            'deductions': "Monthly deductions include: SSNIT (5.5%), PAYE Tax (progressive rates), and any other voluntary deductions you've authorized.",
+            'hr': "For HR-related questions, contact the HR department at hr@payhr.com or call extension 1001.",
+            'contact': "You can reach HR at hr@payhr.com or call +233 30 123 4567. Office hours are Monday-Friday, 8am-5pm.",
+            'password': "To change your password, go to My Profile, enter your current password and new password, then click 'Change Password'.",
+            'profile': "You can update your phone number, bank details, and change your password in the My Profile section.",
+            'help': "I can help you with:\n• Leave balances and requests\n• Payslip downloads\n• Payroll schedules\n• Tax and SSNIT information\n• Profile updates\n• General HR questions",
+            'hello': "Hello! 👋 I'm your PayHR Assistant. How can I help you today?",
+            'hi': "Hi there! 👋 I'm here to help with payroll, leave, and HR questions. What would you like to know?",
+            'thanks': "You're welcome! 😊 Anything else I can help you with?",
+            'thank you': "You're very welcome! Feel free to ask if you need anything else."
+        };
+
+        let employeeBasicSalary = 0;
+
+        async function getEmployeeData() {
+            try {
+                const response = await authenticatedFetch(`${API_URL}/employee/dashboard`);
+                const data = await response.json();
+                employeeBasicSalary = data.employee?.basicSalary || 0;
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+
+        async function getLeaveBalance() {
+            try {
+                const response = await authenticatedFetch(`${API_URL}/employee/dashboard`);
+                const data = await response.json();
+                if (data.leaveBalances) {
+                    const annualLeave = data.leaveBalances.find(b => b.leaveTypeId === 1);
+                    if (annualLeave) {
+                        return `${annualLeave.remainingDays} days remaining`;
+                    }
+                }
+                return 'Check your Leave Management page for details';
+            } catch (error) {
+                return 'Unable to fetch leave balance';
+            }
+        }
+
+        function getNextPayrollDate() {
+            const today = new Date();
+            let nextPayroll = new Date(today.getFullYear(), today.getMonth(), 5);
+            if (today.getDate() > 5) {
+                nextPayroll = new Date(today.getFullYear(), today.getMonth() + 1, 5);
+            }
+            return nextPayroll.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        async function getAIResponse(userMessage) {
+            const msg = userMessage.toLowerCase().trim();
+
+            if (msg.includes('leave balance') || (msg.includes('how many') && msg.includes('leave')) || msg.includes('remaining leave')) {
+                const balance = await getLeaveBalance();
+                return `📊 Your current annual leave balance: **${balance}**\n\nYou can view all leave types in the Leave Management section.`;
+            }
+
+            if (msg.includes('download payslip') || msg.includes('get payslip') || (msg.includes('my payslip') && !msg.includes('how'))) {
+                return `📄 To download your payslip:\n\n1. Go to the **Payslips** tab\n2. Find the payslip you want\n3. Click the **Download PDF** button\n4. Save or print the file\n\nYour payslips are also emailed to you monthly.`;
+            }
+
+            if (msg.includes('my salary') || (msg.includes('how much') && msg.includes('salary')) || msg.includes('basic salary')) {
+                if (employeeBasicSalary > 0) {
+                    return `💰 Your current monthly basic salary is **${formatCurrency(employeeBasicSalary)}**.\n\n📊 Breakdown:\n• SSNIT (5.5%): ${formatCurrency(employeeBasicSalary * 0.055)}\n• Approximate PAYE Tax: ${formatCurrency(employeeBasicSalary * 0.15)}\n• Estimated Net: ${formatCurrency(employeeBasicSalary * 0.795)}\n\n*Actual deductions may vary based on your specific situation.*`;
+                }
+                return '💰 Your salary information is displayed on your Dashboard. You can also check your latest payslip for detailed breakdown.';
+            }
+
+            if (msg.includes('payroll date') || msg.includes('next payroll') || msg.includes('when is payroll')) {
+                const nextDate = getNextPayrollDate();
+                return `📅 The next payroll will be processed on **${nextDate}**.\n\nSalaries are typically credited to your bank account within 1-2 business days after processing.`;
+            }
+
+            if (msg.includes('annual leave')) {
+                return '🏖️ **Annual Leave**: You have 22 days per year. This leave must be requested at least 2 weeks in advance and approved by your manager. Unused days can carry over to the next year (maximum 10 days).';
+            }
+            if (msg.includes('sick leave')) {
+                return '🤒 **Sick Leave**: You have 12 days per year. For sick leave lasting more than 2 days, a medical certificate is required. Notify your manager as soon as possible.';
+            }
+            if (msg.includes('maternity leave')) {
+                return '👶 **Maternity Leave**: 90 days of fully paid leave. Requires 30 days notice and medical certification.';
+            }
+            if (msg.includes('paternity leave')) {
+                return '👨‍👦 **Paternity Leave**: 10 days of fully paid leave. Must be taken within 30 days of the child\'s birth.';
+            }
+
+            for (const [key, response] of Object.entries(knowledgeBase)) {
+                if (msg.includes(key)) {
+                    return response;
+                }
+            }
+
+            return `I understand you're asking about "${userMessage}". Here's what I can help with:\n\n📋 **Topics I can assist with:**\n• Leave balances and requests\n• Payslip downloads\n• Payroll schedules\n• Salary information\n• Tax and SSNIT deductions\n• Profile updates\n\nCould you please rephrase your question? I want to make sure I help you correctly! 🤗`;
+        }
+
+        function toggleChat() {
+            const win = document.getElementById('chat-window');
+            const isVisible = win.style.display === 'flex';
+            win.style.display = isVisible ? 'none' : 'flex';
+            if (!isVisible) {
+                document.getElementById('chat-input').focus();
+            }
+        }
+
+        function closeChat() {
+            document.getElementById('chat-window').style.display = 'none';
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            input.value = '';
+            showTypingIndicator();
+
+            await getEmployeeData();
+            const response = await getAIResponse(message);
+
+            removeTypingIndicator();
+            setTimeout(() => {
+                addMessage(response, 'bot');
+            }, 300);
+        }
+
+        function addMessage(text, sender) {
+            const messagesDiv = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = sender === 'user' ? 'user-message' : 'bot-message';
+
+            if (sender === 'user') {
+                messageDiv.innerHTML = `
+                    <div class="message-bubble">${text}</div>
+                    <div style="width: 32px; height: 32px; background: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas fa-user" style="font-size: 14px; color: white;"></i>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                        <i class="fas fa-robot" style="font-size: 14px; color: white;"></i>
+                    </div>
+                    <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
+                `;
+            }
+
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesDiv = document.getElementById('chat-messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typing-indicator';
+            typingDiv.className = 'bot-message';
+            typingDiv.innerHTML = `
+                <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i class="fas fa-robot" style="font-size: 14px; color: white;"></i>
+                </div>
+                <div class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            `;
+            messagesDiv.appendChild(typingDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        function showWelcomeMessage() {
+            const welcomeMessage = `
+                <div class="bot-message">
+                    <div class="bot-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="bot-bubble">
+                        Hi there! 👋 I'm your <strong>PayHR Assistant</strong>. I can help you with:<br><br>
+                        📄 <strong>Payslip requests</strong> - Download your payslips<br>
+                        🌴 <strong>Leave management</strong> - Check balance, request leave<br>
+                        💰 <strong>Salary information</strong> - View your earnings<br>
+                        📅 <strong>Payroll schedules</strong> - Know payment dates<br>
+                        ❓ <strong>General HR questions</strong> - Policies and procedures<br><br>
+                        What can I help you with today?
+                    </div>
+                </div>
+            `;
+
+            const messagesDiv = document.getElementById('chat-messages');
+            messagesDiv.innerHTML = welcomeMessage;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggle = document.getElementById('chat-toggle');
+            const close = document.getElementById('chat-close');
+            const send = document.getElementById('chat-send');
+            const input = document.getElementById('chat-input');
+            const quickQs = document.querySelectorAll('.quick-q');
+
+            showWelcomeMessage();
+
+            if (toggle) toggle.onclick = toggleChat;
+            if (close) close.onclick = closeChat;
+            if (send) send.onclick = sendMessage;
+            if (input) input.onkeypress = (e) => {
+                if (e.key === 'Enter') sendMessage();
+            };
+
+            quickQs.forEach(q => {
+                q.onclick = () => {
+                    const question = q.getAttribute('data-question');
+                    document.getElementById('chat-input').value = question;
+                    sendMessage();
+                };
+            });
+        });
+    </script>
+
+    <!-- AI Chat Assistant -->
+    <div id="chat-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <div id="chat-toggle">
+            <i class="fas fa-robot"></i>
+        </div>
+        
+        <div id="chat-window" style="display: none;">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <div class="chat-header-title">
+                        <i class="fas fa-robot"></i>
+                        <div>
+                            <h3>PayHR Assistant</h3>
+                            <div class="chat-header-subtitle">AI-Powered Payroll Help</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-times chat-close" id="chat-close"></i>
+                </div>
+            </div>
+            
+            <div id="chat-messages"></div>
+            
+            <div class="quick-questions">
+                <button class="quick-q" data-question="How many leave days do I have?">🌴 Leave balance</button>
+                <button class="quick-q" data-question="When is the next payroll?">📅 Payroll date</button>
+                <button class="quick-q" data-question="How to download payslip?">📄 Get payslip</button>
+                <button class="quick-q" data-question="What is my salary?">💰 My salary</button>
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything...">
+                <button class="chat-send" id="chat-send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

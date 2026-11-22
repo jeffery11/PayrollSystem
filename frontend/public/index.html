@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayHR - Payroll Management System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --sidebar-bg: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            --main-bg: #f8f9fc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-light: #94a3b8;
+            --border: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --btn-bg: #ffffff;
+            --btn-border: #cbd5e1;
+            --btn-primary-bg: #6366f1;
+            --btn-primary-hover: #4f46e5;
+            --btn-primary-color: #ffffff;
+            --success-bg: #10b981;
+            --warning-bg: #f59e0b;
+            --danger-bg: #ef4444;
+            --info-bg: #3b82f6;
+            --sidebar-text: #e2e8f0;
+            --sidebar-text-hover: #ffffff;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --sidebar-bg: linear-gradient(180deg, #0f172a 0%, #0f172a 100%);
+            --main-bg: #1e293b;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-light: #94a3b8;
+            --border: #334155;
+            --border-strong: #475569;
+            --btn-bg: #334155;
+            --btn-border: #475569;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+
+        .app { display: flex; height: 100vh; }
+        
+        /* Sidebar Styles */
+        .sidebar {
+            width: 280px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            padding: 1.5rem;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+        }
+        
+        .sidebar-logo i { margin-right: 10px; color: #6366f1; }
+
+        .user-info {
+            padding: 0 1.5rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+        }
+
+        .user-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+        }
+
+        .user-details h4 { color: white; font-size: 14px; margin-bottom: 4px; }
+        .user-details p { color: rgba(255,255,255,0.6); font-size: 11px; }
+
+        .theme-toggle { padding: 0 1.5rem 1rem; }
+        .theme-toggle .btn {
+            background: rgba(255,255,255,0.08);
+            border-color: rgba(255,255,255,0.15);
+            color: white;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .nav-menu { flex: 1; padding: 0.5rem 0; }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 1.5rem;
+            margin: 4px 8px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--sidebar-text);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-item:hover { background: rgba(255,255,255,0.08); color: white; }
+        .nav-item.active { background: #6366f1; color: white; }
+        .nav-item i { width: 20px; font-size: 16px; }
+
+        .logout-btn {
+            margin: 1rem 0.5rem;
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+        .logout-btn:hover { background: rgba(239, 68, 68, 0.25); color: #ef4444; }
+
+        /* Main Content */
+        .main { flex: 1; overflow-y: auto; padding: 1.5rem 2rem; background: var(--main-bg); }
+        
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .page-title { font-size: 28px; font-weight: 700; color: var(--text-primary); }
+
+        /* AI Chat Assistant - Enhanced Design */
+        #chat-widget {
+            font-family: 'Inter', sans-serif;
+        }
+
+        #chat-toggle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        #chat-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4); }
+            50% { box-shadow: 0 4px 30px rgba(102, 126, 234, 0.6); }
+            100% { box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4); }
+        }
+
+        #chat-window {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        #chat-window .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 18px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #chat-window .chat-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 20px 20px;
+            animation: moveBackground 20s linear infinite;
+        }
+
+        @keyframes moveBackground {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .chat-header-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-header-title i {
+            font-size: 24px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .chat-header-title h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .chat-header-subtitle {
+            font-size: 11px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        .chat-close {
+            cursor: pointer;
+            font-size: 20px;
+            transition: transform 0.2s;
+        }
+
+        .chat-close:hover {
+            transform: rotate(90deg);
+        }
+
+        #chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--main-bg);
+            color: var(--text-primary);
+        }
+
+        .bot-message {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            animation: slideInLeft 0.3s ease;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .bot-avatar {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .bot-avatar i {
+            font-size: 18px;
+            color: white;
+        }
+
+        .bot-bubble {
+            background: var(--card-bg);
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-top-left-radius: 4px;
+            max-width: 85%;
+            font-size: 13px;
+            line-height: 1.5;
+            color: var(--text-primary);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .user-message {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+            animation: slideInRight 0.3s ease;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .user-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-top-right-radius: 4px;
+            max-width: 85%;
+            font-size: 13px;
+            line-height: 1.5;
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            background: #cbd5e1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .user-avatar i {
+            font-size: 18px;
+            color: #64748b;
+        }
+
+        .quick-questions {
+            padding: 12px 16px;
+            background: var(--main-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quick-q {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 8px 14px;
+            border-radius: 25px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-primary);
+        }
+
+        .quick-q:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            border-color: transparent;
+        }
+
+        .chat-input-area {
+            padding: 16px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            font-size: 13px;
+            background: var(--main-bg);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+
+        .chat-send {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-send:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .chat-send i {
+            font-size: 18px;
+            color: white;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 6px;
+            padding: 12px 16px;
+            background: var(--card-bg);
+            border-radius: 18px;
+            border-top-left-radius: 4px;
+            width: fit-content;
+            border: 1px solid var(--border);
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #667eea;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(1) { animation-delay: -0.32s; }
+        .typing-indicator span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+
+        #chat-messages::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        #chat-messages::-webkit-scrollbar-track {
+            background: var(--border);
+            border-radius: 10px;
+        }
+
+        #chat-messages::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        @media (max-width: 480px) {
+            #chat-window {
+                width: calc(100vw - 40px);
+                right: 0;
+                bottom: 80px;
+                height: 550px;
+            }
+
+            .quick-q {
+                font-size: 10px;
+                padding: 6px 12px;
+            }
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.25rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+        
+        .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-icon.blue { background: #e0e7ff; color: #4f46e5; }
+        .stat-icon.green { background: #d1fae5; color: #10b981; }
+        .stat-icon.purple { background: #ede9fe; color: #8b5cf6; }
+        .stat-icon.orange { background: #fed7aa; color: #f97316; }
+        
+        .stat-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; }
+        .stat-value { font-size: 28px; font-weight: 700; color: var(--text-primary); }
+        .stat-change { font-size: 12px; color: #10b981; margin-top: 8px; }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+        
+        .card-title { font-size: 18px; font-weight: 600; color: var(--text-primary); }
+
+        /* Tables */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th {
+            text-align: left;
+            padding: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .data-table td {
+            padding: 12px;
+            font-size: 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-primary);
+        }
+        
+        .data-table tr:hover td { background: var(--bg); }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .badge-success { background: #d1fae5; color: #065f46; }
+        .badge-warning { background: #fed7aa; color: #9a3412; }
+        .badge-info { background: #dbeafe; color: #1e40af; }
+        .badge-danger { background: #fee2e2; color: #991b1b; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            border: 1px solid var(--btn-border);
+            background: var(--btn-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary { background: var(--btn-primary-bg); color: white; border: none; }
+        .btn-primary:hover { background: var(--btn-primary-hover); transform: translateY(-1px); }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+        .form-group input, .form-group select {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-strong);
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        .form-group input:focus { outline: none; border-color: #6366f1; }
+
+        /* Payslip Card */
+        .payslip-card {
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            transition: all 0.2s;
+        }
+        .payslip-card:hover { box-shadow: var(--shadow-md); }
+
+        /* Loading */
+        .loading { text-align: center; padding: 2rem; color: var(--text-secondary); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 768px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .sidebar { width: 80px; }
+            .sidebar .sidebar-logo span, .sidebar .user-details, .sidebar .nav-item span { display: none; }
+            .sidebar .nav-item { justify-content: center; padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <div class="sidebar">
+        <div class="sidebar-logo"><i class="fas fa-building"></i><span> PayHR</span></div>
+        <div class="user-info">
+            <div class="user-card">
+                <div class="user-avatar" id="user-avatar">U</div>
+                <div class="user-details">
+                    <h4 id="user-name">Loading...</h4>
+                    <p id="user-role">Loading...</p>
+                </div>
+            </div>
+        </div>
+        <div class="theme-toggle">
+            <button id="theme-toggle" class="btn"><i id="theme-toggle-icon" class="fas fa-moon"></i> <span id="theme-toggle-text">Dark mode</span></button>
+        </div>
+        <div class="nav-menu">
+            <div class="nav-item active" data-page="dashboard"><i class="fas fa-chart-line"></i><span> Dashboard</span></div>
+            <div class="nav-item" data-page="employees"><i class="fas fa-users"></i><span> Employees</span></div>
+            <div class="nav-item" data-page="payroll"><i class="fas fa-calculator"></i><span> Run Payroll</span></div>
+            <div class="nav-item" data-page="payslips"><i class="fas fa-file-invoice"></i><span> Payslips</span></div>
+            <div class="nav-item" data-page="tax"><i class="fas fa-chart-bar"></i><span> Tax Summary</span></div>
+            <div class="nav-item" data-page="leave"><i class="fas fa-calendar-alt"></i><span> Leave Mgmt</span></div>
+        </div>
+        <div class="nav-item logout-btn" id="logout-btn"><i class="fas fa-sign-out-alt"></i><span> Logout</span></div>
+    </div>
+
+    <div class="main">
+        <!-- Dashboard Page -->
+        <div id="page-dashboard" class="page active">
+            <div class="page-header">
+                <div class="page-title">Dashboard</div>
+                <div id="current-date" style="color: var(--text-secondary);"></div>
+            </div>
+            <div class="stats-grid" id="dashboard-stats">
+                <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-users"></i></div><div class="stat-label">Total Employees</div><div class="stat-value" id="stat-employees">-</div><div class="stat-change">Active staff</div></div>
+                <div class="stat-card"><div class="stat-icon green"><i class="fas fa-money-bill-wave"></i></div><div class="stat-label">Monthly Payroll</div><div class="stat-value" id="stat-payroll">-</div><div class="stat-change">This month</div></div>
+                <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-chart-line"></i></div><div class="stat-label">Tax Withheld</div><div class="stat-value" id="stat-tax">-</div><div class="stat-change">PAYE collected</div></div>
+                <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-file-invoice-dollar"></i></div><div class="stat-label">Net Disbursed</div><div class="stat-value" id="stat-net">-</div><div class="stat-change">After deductions</div></div>
+            </div>
+            <!-- Leave Requests Management Card - Add this to the dashboard page -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-title"><i class="fas fa-calendar-check"></i> Pending Leave Requests</span>
+                    <span class="badge badge-warning" id="pending-count">0 pending</span>
+                </div>
+                <div id="pending-leave-requests">Loading...</div>
+            </div>
+            <div class="card">
+    <div class="card-header">
+        <span class="card-title"><i class="fas fa-file-export"></i> Export Reports</span>
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button class="btn btn-sm" onclick="exportPayrollReport()" style="background: #10b981; color: white;">
+                <i class="fas fa-file-excel"></i> Payroll Report
+            </button>
+            <button class="btn btn-sm" onclick="exportTaxReport()" style="background: #f59e0b; color: white;">
+                <i class="fas fa-chart-line"></i> Tax Report
+            </button>
+            <button class="btn btn-sm" onclick="exportEmployees()" style="background: #3b82f6; color: white;">
+                <i class="fas fa-users"></i> Employee List
+            </button>
+            <button class="btn btn-sm" onclick="generateBankFile()" style="background: #8b5cf6; color: white;">
+                <i class="fas fa-university"></i> Bank File
+            </button>
+            <button class="btn btn-sm" onclick="emailAllPayslips()" style="background: #ef4444; color: white;">
+                <i class="fas fa-envelope"></i> Email All
+            </button>
+        </div>
+    </div>
+                <div id="recent-activities">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Employees Page -->
+        <div id="page-employees" class="page">
+            <div class="page-header">
+                <div class="page-title">Employee Management</div>
+                <button class="btn btn-primary" onclick="showAddEmployeeForm()"><i class="fas fa-plus"></i> Add Employee</button>
+            </div>
+            <div id="add-employee-form" style="display:none;" class="card">
+                <div class="card-header"><span class="card-title">Add New Employee</span><button class="btn btn-sm" onclick="hideAddEmployeeForm()"><i class="fas fa-times"></i></button></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>First Name *</label><input type="text" id="emp-first" placeholder="First name"></div>
+                    <div class="form-group"><label>Last Name *</label><input type="text" id="emp-last" placeholder="Last name"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="emp-email" placeholder="email@company.com"></div>
+                    <div class="form-group"><label>Position</label><input type="text" id="emp-position" placeholder="Job title"></div>
+                    <div class="form-group"><label>Department</label><select id="emp-dept"><option>Engineering</option><option>Finance</option><option>HR</option><option>Sales</option><option>Marketing</option><option>Operations</option></select></div>
+                    <div class="form-group"><label>Monthly Salary (GH₵) *</label><input type="number" id="emp-salary" placeholder="e.g., 8000"></div>
+                </div>
+                <div style="margin-top:1rem;"><button class="btn btn-primary" onclick="addNewEmployee()">Save Employee</button> <button class="btn" onclick="hideAddEmployeeForm()">Cancel</button></div>
+            </div>
+            <div class="card">
+                <div class="card-header"><span class="card-title"><i class="fas fa-list"></i> Employee Directory</span><span id="employee-count" class="badge badge-info"></span></div>
+                <div id="employees-list">Loading...</div>
+            </div>
+        </div>
+
+        <!-- Run Payroll Page -->
+        <div id="page-payroll" class="page">
+            <div class="page-header"><div class="page-title">Run Payroll</div><span class="badge badge-info">June 2026 Period</span></div>
+            <div class="card">
+                <div class="card-header"><span class="card-title"><i class="fas fa-user"></i> Select Employee</span></div>
+                <div class="form-group"><label>Employee</label><select id="calc-employee" onchange="loadEmployeeSalary()" style="width:100%; padding:12px;"></select></div>
+                <div class="divider" style="margin:1rem 0;"></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Basic Salary (GH₵)</label><input type="number" id="calc-basic" readonly style="background:var(--bg);"></div>
+                    <div class="form-group"><label>Overtime (GH₵)</label><input type="number" id="calc-overtime" value="0" oninput="calculatePayroll()"></div>
+                    <div class="form-group"><label>Allowances (GH₵)</label><input type="number" id="calc-allowances" value="0" oninput="calculatePayroll()"></div>
+                    <div class="form-group"><label>Other Deductions (GH₵)</label><input type="number" id="calc-deductions" value="0" oninput="calculatePayroll()"></div>
+                </div>
+                <div class="divider"></div>
+                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; margin:1rem 0;">
+                    <div class="stat-card" style="text-align:center;"><div class="stat-label">SSNIT (5.5%)</div><div class="stat-value" id="result-ssnit" style="font-size:20px;">GH₵ 0</div></div>
+                    <div class="stat-card" style="text-align:center;"><div class="stat-label">PAYE Tax</div><div class="stat-value" id="result-tax" style="font-size:20px;">GH₵ 0</div></div>
+                    <div class="stat-card" style="text-align:center; background: linear-gradient(135deg, #10b981, #059669); color:white;"><div class="stat-label" style="color:rgba(255,255,255,0.9);">Net Pay</div><div class="stat-value" id="result-net" style="font-size:24px;">GH₵ 0</div></div>
+                </div>
+                <button class="btn btn-primary" onclick="processPayrollSubmit()" style="width:100%;"><i class="fas fa-check-circle"></i> Process Payroll</button>
+            </div>
+        </div>
+
+        <!-- Payslips Page -->
+        <div id="page-payslips" class="page">
+            <div class="page-header"><div class="page-title">Payslips</div></div>
+            <div id="payslips-list">Loading...</div>
+        </div>
+
+        <!-- Tax Summary Page -->
+        <div id="page-tax" class="page">
+            <div class="page-header"><div class="page-title">Tax Summary</div></div>
+            <div class="card">
+                <div class="card-header"><span class="card-title"><i class="fas fa-table"></i> Ghana PAYE Tax Brackets 2026</span></div>
+                <table class="data-table">
+                    <thead><tr><th>Monthly Income (GH₵)</th><th>Rate</th><th>Description</th></tr></thead>
+                    <tbody>
+                        <tr><td>0 – 490</td><td><span class="badge badge-success">0%</span></td><td>Tax-free threshold</td></tr>
+                        <tr><td>491 – 700</td><td><span class="badge badge-info">5%</span></td><td>Basic rate</td></tr>
+                        <tr><td>701 – 3,116</td><td><span class="badge badge-info">10%</span></td><td>Standard rate</td></tr>
+                        <tr><td>3,117 – 5,500</td><td><span class="badge badge-warning">17.5%</span></td><td>Higher rate</td></tr>
+                        <tr><td>5,501 – 10,000</td><td><span class="badge badge-warning">25%</span></td><td>Upper rate</td></tr>
+                        <tr><td>Above 10,000</td><td><span class="badge badge-danger">30%</span></td><td>Top rate</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-chart-bar"></i> Employee Tax Liability</span></div><div id="tax-summary">Loading...</div></div>
+        </div>
+
+        <!-- Leave Management Page -->
+        <div id="page-leave" class="page">
+            <div class="page-header"><div class="page-title">Leave Management</div><button class="btn btn-primary" onclick="showLeaveRequestForm()"><i class="fas fa-plus"></i> Request Leave</button></div>
+            <div id="leave-request-form" style="display:none;" class="card">
+                <div class="card-header"><span class="card-title">New Leave Request</span><button class="btn btn-sm" onclick="hideLeaveRequestForm()"><i class="fas fa-times"></i></button></div>
+                <div class="form-grid">
+                    <div class="form-group"><label>Employee</label><select id="leave-employee"></select></div>
+                    <div class="form-group"><label>Leave Type</label><select id="leave-type"><option value="1">Annual Leave (22 days)</option><option value="2">Sick Leave (12 days)</option><option value="3">Maternity Leave (90 days)</option><option value="4">Paternity Leave (10 days)</option><option value="5">Bereavement Leave (5 days)</option><option value="6">Unpaid Leave</option></select></div>
+                    <div class="form-group"><label>Start Date</label><input type="date" id="leave-start"></div>
+                    <div class="form-group"><label>End Date</label><input type="date" id="leave-end"></div>
+                    <div class="form-group" style="grid-column:span 2;"><label>Reason</label><textarea id="leave-reason" rows="2" placeholder="Reason for leave..."></textarea></div>
+                </div>
+                <button class="btn btn-primary" onclick="submitLeaveRequest()">Submit Request</button>
+            </div>
+            <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-list"></i> Leave Balances</span></div><div id="leave-balances">Loading...</div></div>
+            <div class="card"><div class="card-header"><span class="card-title"><i class="fas fa-history"></i> Leave Requests</span></div><div id="leave-requests-list">Loading...</div></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:5001/api';
+    let currentUser = null;
+    let userRole = null;
+    let employees = [];
+    let payslips = [];
+    let leaveRequests = [];
+
+    // Theme Management
+    function applyTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        const icon = document.getElementById('theme-toggle-icon');
+        const text = document.getElementById('theme-toggle-text');
+        if (theme === 'dark') { icon.className = 'fas fa-sun'; text.textContent = 'Light mode'; }
+        else { icon.className = 'fas fa-moon'; text.textContent = 'Dark mode'; }
+        localStorage.setItem('theme', theme);
+    }
+
+    function initializeTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        const defaultTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        applyTheme(savedTheme || defaultTheme);
+        document.getElementById('theme-toggle').addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        });
+    }
+
+    // Display current date
+    function displayCurrentDate() {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('current-date').innerHTML = new Date().toLocaleDateString('en-US', options);
+    }
+
+    // Authentication
+    function checkAuth() {
+        const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
+        if (!token || !user) { window.location.href = 'login.html'; return false; }
+        currentUser = JSON.parse(user);
+        userRole = currentUser.role;
+        document.getElementById('user-name').textContent = currentUser.name || currentUser.username;
+        document.getElementById('user-role').textContent = currentUser.role.toUpperCase();
+        document.getElementById('user-avatar').textContent = (currentUser.name || currentUser.username).charAt(0).toUpperCase();
+        updateMenuByRole();
+        return true;
+    }
+
+    function updateMenuByRole() {
+        const menuItems = document.querySelectorAll('.nav-item[data-page]');
+        menuItems.forEach(item => {
+            const page = item.dataset.page;
+            if (userRole === 'employee' && !['dashboard', 'payslips', 'leave'].includes(page)) {
+                item.style.display = 'none';
+            } else { item.style.display = 'flex'; }
+        });
+    }
+
+    async function authenticatedFetch(url, options = {}) {
+        const token = localStorage.getItem('token');
+        const response = await fetch(url, {
+            ...options,
+            headers: { 'Content-Type': 'application/json', 'x-auth-token': token, ...options.headers }
+        });
+        if (response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+            throw new Error('Session expired');
+        }
+        return response;
+    }
+
+    // ==================== EXPORT FUNCTIONS ====================
+
+    // Export Payroll Report to Excel
+    async function exportPayrollReport() {
+        try {
+            const token = localStorage.getItem('token');
+            const period = prompt('Enter pay period (e.g., June 2026):', 'June 2026');
+            if (!period) return;
+            
+            // Show loading
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            btn.disabled = true;
+            
+            // Fetch the file
+            const response = await fetch(`${API_URL}/export/payroll-report?period=${encodeURIComponent(period)}`, {
+                headers: { 'x-auth-token': token }
+            });
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `payroll_report_${period.replace(/ /g, '_')}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                alert('Payroll report downloaded successfully!');
+            } else {
+                alert('Error generating report');
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        } finally {
+            const btn = event.target;
+            btn.innerHTML = '<i class="fas fa-file-excel"></i> Payroll Report';
+            btn.disabled = false;
+        }
+    }
+
+    // Export Tax Report to Excel
+    async function exportTaxReport() {
+        try {
+            const token = localStorage.getItem('token');
+            const year = prompt('Enter year (e.g., 2026):', '2026');
+            if (!year) return;
+            
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            btn.disabled = true;
+            
+            const response = await fetch(`${API_URL}/export/tax-report?period=${year}`, {
+                headers: { 'x-auth-token': token }
+            });
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `tax_report_${year}.xlsx`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                alert('Tax report downloaded successfully!');
+            } else {
+                alert('Error generating tax report');
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        } finally {
+            const btn = event.target;
+            btn.innerHTML = '<i class="fas fa-chart-line"></i> Tax Report';
+            btn.disabled = false;
+        }
+    }
+
+    // Export Employee List to Excel
+    async function exportEmployees() {
+        try {
+            const token = localStorage.getItem('token');
+            
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            btn.disabled = true;
+            
+            const response = await fetch(`${API_URL}/export/employees`, {
+                headers: { 'x-auth-token': token }
+            });
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'employee_directory.xlsx';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                alert('Employee list downloaded successfully!');
+            } else {
+                alert('Error generating employee list');
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        } finally {
+            const btn = event.target;
+            btn.innerHTML = '<i class="fas fa-users"></i> Employee List';
+            btn.disabled = false;
+        }
+    }
+
+    // Generate Bank File for Salary Payments
+    async function generateBankFile() {
+        const format = prompt('Select bank file format:\n1 - GIP (Ghana Interbank Payment)\n2 - CSV (Universal Format)\n3 - MT940 (SWIFT)', '2');
+        
+        if (!format) return;
+        
+        try {
+            const token = localStorage.getItem('token');
+            let url = '';
+            let filename = '';
+            
+            if (format === '1') {
+                url = `${API_URL}/bank/generate-gip`;
+                filename = 'salary_payments.gip';
+            } else if (format === '2') {
+                url = `${API_URL}/bank/generate-csv`;
+                filename = 'salary_payments.csv';
+            } else if (format === '3') {
+                alert('MT940 format coming soon!');
+                return;
+            } else {
+                alert('Invalid selection');
+                return;
+            }
+            
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
+            btn.disabled = true;
+            
+            const response = await fetch(url, {
+                headers: { 'x-auth-token': token }
+            });
+            
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                alert('Bank file generated successfully!');
+            } else {
+                alert('Error generating bank file');
+            }
+        } catch (error) {
+            alert('Error: ' + error.message);
+        } finally {
+            const btn = event.target;
+            btn.innerHTML = '<i class="fas fa-university"></i> Bank File';
+            btn.disabled = false;
+        }
+    }
+
+    // Email All Payslips to Employees
+    async function emailAllPayslips() {
+        if (!payslips || payslips.length === 0) {
+            alert('No payslips to send. Please process payroll first.');
+            return;
+        }
+        
+        if (!confirm(`Send payslips to ${payslips.length} employees?`)) return;
+        
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        btn.disabled = true;
+        
+        let sent = 0;
+        let failed = 0;
+        
+        for (const slip of payslips) {
+            try {
+                const response = await authenticatedFetch(`${API_URL}/payroll/send-payslip-email/${slip.id}`, { 
+                    method: 'POST' 
+                });
+                const data = await response.json();
+                if (data.success) sent++;
+                else failed++;
+            } catch (error) {
+                failed++;
+            }
+        }
+        
+        alert(`Email Summary:\n✅ Sent: ${sent}\n❌ Failed: ${failed}`);
+        
+        btn.innerHTML = '<i class="fas fa-envelope"></i> Email All';
+        btn.disabled = false;
+    }
+
+    // Add email button to individual payslip
+    function addEmailButtonToPayslip(payslipId) {
+        return `<button class="btn btn-sm" onclick="emailSinglePayslip(${payslipId})" style="background: #ef4444; color: white;">
+            <i class="fas fa-envelope"></i> Email
+        </button>`;
+    }
+
+    // Email Single Payslip
+    async function emailSinglePayslip(payrollId) {
+        if (!confirm('Send this payslip to the employee\'s email address?')) return;
+        
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+        btn.disabled = true;
+        
+        try {
+            const response = await authenticatedFetch(`${API_URL}/payroll/send-payslip-email/${payrollId}`, { 
+                method: 'POST' 
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                alert('✅ Payslip emailed successfully!');
+            } else {
+                alert('❌ Error: ' + (data.message || 'Failed to send email'));
+            }
+        } catch (error) {
+            alert('❌ Error sending email: ' + error.message);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    function formatCurrency(amount) { return 'GH₵ ' + Math.round(amount || 0).toLocaleString(); }
+
+    // Navigation
+    document.querySelectorAll('.nav-item[data-page]').forEach(item => {
+        item.addEventListener('click', () => {
+            const page = item.dataset.page;
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            item.classList.add('active');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(`page-${page}`).classList.add('active');
+            loadPageData(page);
+        });
+    });
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
+    });
+
+    // Load page data
+    async function loadPageData(page) {
+        if (page === 'dashboard') await loadDashboard();
+        else if (page === 'employees') await loadEmployees();
+        else if (page === 'payslips') await loadPayslips();
+        else if (page === 'tax') await loadTaxSummary();
+        else if (page === 'leave') { await loadLeaveBalances(); await loadLeaveRequests(); }
+    }
+
+    // Dashboard
+    async function loadDashboard() {
+        try {
+            const response = await authenticatedFetch(`${API_URL}/dashboard/stats`);
+            const data = await response.json();
+            document.getElementById('stat-employees').innerHTML = data.totalEmployees || 0;
+            document.getElementById('stat-payroll').innerHTML = formatCurrency(data.monthlyPayroll);
+            document.getElementById('stat-tax').innerHTML = formatCurrency(data.taxWithheld);
+            document.getElementById('stat-net').innerHTML = formatCurrency(data.netDisbursed);
+            
+            if (data.recentActivities && data.recentActivities.length) {
+                let html = '<table class="data-table"><thead><tr><th>Employee</th><th>Department</th><th>Gross</th><th>Net</th><th>Status</th></tr></thead><tbody>';
+                data.recentActivities.forEach(act => {
+                    html += `<tr><td><strong>${act.employee_name}</strong></td><td>${act.department_name}</td><td>${formatCurrency(act.gross)}</td><td>${formatCurrency(act.net)}</td><td><span class="badge badge-success">Paid</span></td></tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('recent-activities').innerHTML = html;
+            } else { document.getElementById('recent-activities').innerHTML = '<div class="loading">No recent activities</div>'; }
+        } catch (error) { console.error('Dashboard error:', error); }
+    }
+
+    // Employees
+    async function loadEmployees() {
+        try {
+            const response = await authenticatedFetch(`${API_URL}/employees`);
+            const data = await response.json();
+            employees = data.employees || [];
+            document.getElementById('employee-count').innerHTML = `${employees.length} total`;
+            let html = '<table class="data-table"><thead><tr><th>Name</th><th>Department</th><th>Position</th><th>Salary</th><th>Status</th></tr></thead><tbody>';
+            employees.forEach(emp => {
+                html += `<tr><td><strong>${emp.first_name} ${emp.last_name}</strong></td><td>${emp.department_name || 'General'}</td><td>${emp.position || 'Staff'}</td><td>${formatCurrency(emp.basic_salary)}</td><td><span class="badge badge-success">${emp.status}</span></td></tr>`;
+            });
+            html += '</tbody></table>';
+            document.getElementById('employees-list').innerHTML = html;
+            
+            // Update payroll dropdown
+            const select = document.getElementById('calc-employee');
+            if (select) select.innerHTML = '<option value="">Select Employee</option>' + employees.map(e => `<option value="${e.employee_id}">${e.first_name} ${e.last_name} - ${e.position || 'Staff'}</option>`).join('');
+        } catch (error) { document.getElementById('employees-list').innerHTML = '<div class="loading">Error loading employees</div>'; }
+    }
+
+    function showAddEmployeeForm() { document.getElementById('add-employee-form').style.display = 'block'; }
+    function hideAddEmployeeForm() { document.getElementById('add-employee-form').style.display = 'none'; }
+
+    async function addNewEmployee() {
+        const data = {
+            first_name: document.getElementById('emp-first').value,
+            last_name: document.getElementById('emp-last').value,
+            email: document.getElementById('emp-email').value,
+            position: document.getElementById('emp-position').value,
+            department_name: document.getElementById('emp-dept').value,
+            basic_salary: parseFloat(document.getElementById('emp-salary').value)
+        };
+        if (!data.first_name || !data.last_name || !data.basic_salary) { alert('Please fill required fields'); return; }
+        try {
+            const response = await authenticatedFetch(`${API_URL}/employees`, { method: 'POST', body: JSON.stringify(data) });
+            const result = await response.json();
+            if (result.success) { alert('Employee added!'); hideAddEmployeeForm(); loadEmployees(); loadDashboard(); }
+            else alert('Error: ' + result.message);
+        } catch (error) { alert('Error: ' + error.message); }
+    }
+
+    // Payroll
+    function loadEmployeeSalary() {
+        const id = parseInt(document.getElementById('calc-employee').value);
+        const emp = employees.find(e => e.employee_id === id);
+        if (emp) {
+            document.getElementById('calc-basic').value = emp.basic_salary;
+            document.getElementById('calc-overtime').value = 0;
+            document.getElementById('calc-allowances').value = 0;
+            document.getElementById('calc-deductions').value = 0;
+            calculatePayroll();
+        }
+    }
+
+    async function calculatePayroll() {
+        const basic = parseFloat(document.getElementById('calc-basic').value) || 0;
+        const overtime = parseFloat(document.getElementById('calc-overtime').value) || 0;
+        const allowances = parseFloat(document.getElementById('calc-allowances').value) || 0;
+        const deductions = parseFloat(document.getElementById('calc-deductions').value) || 0;
+        try {
+            const response = await authenticatedFetch(`${API_URL}/payroll/calculate`, {
+                method: 'POST',
+                body: JSON.stringify({ grossSalary: basic, overtime, allowances, deductions })
+            });
+            const data = await response.json();
+            document.getElementById('result-ssnit').innerHTML = formatCurrency(data.ssnit);
+            document.getElementById('result-tax').innerHTML = formatCurrency(data.paye);
+            document.getElementById('result-net').innerHTML = formatCurrency(data.net);
+        } catch (error) { console.error('Calculation error:', error); }
+    }
+
+    async function processPayrollSubmit() {
+        const empId = document.getElementById('calc-employee').value;
+        if (!empId) { alert('Select an employee'); return; }
+        const basic = parseFloat(document.getElementById('calc-basic').value) || 0;
+        const overtime = parseFloat(document.getElementById('calc-overtime').value) || 0;
+        const allowances = parseFloat(document.getElementById('calc-allowances').value) || 0;
+        const deductions = parseFloat(document.getElementById('calc-deductions').value) || 0;
+        
+        const calcRes = await authenticatedFetch(`${API_URL}/payroll/calculate`, {
+            method: 'POST',
+            body: JSON.stringify({ grossSalary: basic, overtime, allowances, deductions })
+        });
+        const calc = await calcRes.json();
+        
+        const response = await authenticatedFetch(`${API_URL}/payroll/process`, {
+            method: 'POST',
+            body: JSON.stringify({ employeeId: empId, periodId: 1, grossSalary: basic, overtime, allowances, deductions, netSalary: calc.net, taxAmount: calc.paye, ssnitAmount: calc.ssnit })
+        });
+        const result = await response.json();
+        if (result.success) { alert('Payroll processed!'); await loadPayslips(); }
+        else alert('Error: ' + result.message);
+    }
+
+    // Payslips
+    async function loadPayslips() {
+        try {
+            const response = await authenticatedFetch(`${API_URL}/payroll/payslips`);
+            const data = await response.json();
+            payslips = data.payslips || [];
+            if (!payslips.length) { document.getElementById('payslips-list').innerHTML = '<div class="loading">No payslips yet. Run payroll first.</div>'; return; }
+            let html = '';
+            payslips.forEach(slip => {
+                html += `<div class="payslip-card"><div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;"><div><strong>${slip.employeeName}</strong><br><small style="color:var(--text-secondary);">${slip.position} · ${slip.department}</small></div><div><div style="font-weight:600; font-size:20px;">${formatCurrency(slip.net)}</div><small>${slip.period}</small></div></div>
+                <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin-bottom:1rem;"><div><small>Gross: ${formatCurrency(slip.gross)}</small></div><div><small>SSNIT: ${formatCurrency(slip.ssnit)}</small></div><div><small>Tax: ${formatCurrency(slip.tax)}</small></div></div>
+                <button class="btn btn-primary btn-sm" onclick="downloadPayslip(${slip.id})"><i class="fas fa-download"></i> Download PDF</button></div>`;
+            });
+            document.getElementById('payslips-list').innerHTML = html;
+        } catch (error) { document.getElementById('payslips-list').innerHTML = '<div class="loading">Error loading payslips</div>'; }
+    }
+
+    async function downloadPayslip(id) {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${API_URL}/payroll/payslip-pdf/${id}`, { headers: { 'x-auth-token': token } });
+        if (response.ok) { const html = await response.text(); const win = window.open(); win.document.write(html); win.document.close(); }
+        else alert('Error downloading');
+    }
+
+    // Tax Summary
+    async function loadTaxSummary() {
+        try {
+            const response = await authenticatedFetch(`${API_URL}/employees`);
+            const emps = (await response.json()).employees || [];
+            let html = '<table class="data-table"><thead><tr><th>Employee</th><th>Gross</th><th>SSNIT</th><th>PAYE</th><th>Effective Rate</th></tr></thead><tbody>';
+            for (const emp of emps) {
+                const calc = await (await authenticatedFetch(`${API_URL}/payroll/calculate`, { method: 'POST', body: JSON.stringify({ grossSalary: emp.basic_salary, overtime: 0, allowances: 0, deductions: 0 }) })).json();
+                html += `<tr><td>${emp.first_name} ${emp.last_name}</td><td>${formatCurrency(calc.total)}</td><td>${formatCurrency(calc.ssnit)}</td><td>${formatCurrency(calc.paye)}</td><td><span class="badge badge-info">${Math.round(calc.paye/calc.total*100)}%</span></td></tr>`;
+            }
+            html += '</tbody></table>';
+            document.getElementById('tax-summary').innerHTML = html;
+        } catch (error) { document.getElementById('tax-summary').innerHTML = '<div class="loading">Error loading tax summary</div>'; }
+    }
+
+    // Leave Management
+    async function loadLeaveBalances() {
+        try {
+            const response = await authenticatedFetch(`${API_URL}/leave/all-balances`);
+            const data = await response.json();
+            if (data.balances && data.balances.length) {
+                let html = '<table class="data-table"><thead><tr><th>Employee</th><th>Leave Type</th><th>Total</th><th>Used</th><th>Remaining</th><tr></thead><tbody>';
+                data.balances.forEach(b => {
+                    html += `<tr><td>${b.employee?.first_name || 'Unknown'} ${b.employee?.last_name || ''}</td><td>${b.leaveType?.name || 'Unknown'}</td><td>${b.totalDays}</td><td>${b.usedDays}</td><td><strong>${b.remainingDays}</strong></td></tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('leave-balances').innerHTML = html;
+            } else { document.getElementById('leave-balances').innerHTML = '<div class="loading">No leave balances found</div>'; }
+        } catch (error) { document.getElementById('leave-balances').innerHTML = '<div class="loading">Error loading balances</div>'; }
+    }
+
+    async function loadLeaveRequests() {
+        try {
+            const response = await authenticatedFetch(`${API_URL}/leave/all-requests`);
+            const data = await response.json();
+            leaveRequests = data.requests || [];
+            if (!leaveRequests.length) { document.getElementById('leave-requests-list').innerHTML = '<div class="loading">No leave requests</div>'; return; }
+            let html = '<table class="data-table"><thead><tr><th>Employee</th><th>Type</th><th>Dates</th><th>Days</th><th>Status</th></tr></thead><tbody>';
+            leaveRequests.forEach(r => {
+                const statusClass = r.status === 'Pending' ? 'badge-warning' : (r.status === 'Approved' ? 'badge-success' : 'badge-danger');
+                html += `<tr><td>${r.employee?.first_name || 'Unknown'} ${r.employee?.last_name || ''}</td><td>${r.leaveType?.name || 'Unknown'}</td><td>${r.startDate} to ${r.endDate}</td><td>${r.days}</td><td><span class="badge ${statusClass}">${r.status}</span></td></tr>`;
+            });
+            html += '</tbody></table>';
+            document.getElementById('leave-requests-list').innerHTML = html;
+        } catch (error) { document.getElementById('leave-requests-list').innerHTML = '<div class="loading">Error loading requests</div>'; }
+    }
+
+    function showLeaveRequestForm() { document.getElementById('leave-request-form').style.display = 'block'; const sel = document.getElementById('leave-employee'); sel.innerHTML = employees.map(e => `<option value="${e.employee_id}">${e.first_name} ${e.last_name}</option>`).join(''); }
+    function hideLeaveRequestForm() { document.getElementById('leave-request-form').style.display = 'none'; }
+    async function submitLeaveRequest() {
+        const data = {
+            employeeId: parseInt(document.getElementById('leave-employee').value),
+            leaveTypeId: parseInt(document.getElementById('leave-type').value),
+            startDate: document.getElementById('leave-start').value,
+            endDate: document.getElementById('leave-end').value,
+            reason: document.getElementById('leave-reason').value
+        };
+        if (!data.employeeId || !data.startDate || !data.endDate) { alert('Fill all fields'); return; }
+        const response = await authenticatedFetch(`${API_URL}/leave/request`, { method: 'POST', body: JSON.stringify(data) });
+        const result = await response.json();
+        if (result.success) { alert('Leave request submitted!'); hideLeaveRequestForm(); loadLeaveRequests(); loadLeaveBalances(); }
+        else alert('Error: ' + result.message);
+    }
+
+    // Initialize
+    initializeTheme();
+    displayCurrentDate();
+    if (checkAuth()) {
+        loadDashboard();
+        loadEmployees();
+        loadPayslips();
+        loadTaxSummary();
+        loadLeaveBalances();
+        loadLeaveRequests();
+    }
+
+    // ==================== AI CHAT ASSISTANT ====================
+    const knowledgeBase = {
+        'leave': "You can check your leave balance in the Leave Management section. To request leave, go to Leave Management, select dates, and submit. Your request will be sent to HR for approval.",
+        'leave balance': "Your leave balance is displayed in the Leave Management tab. You can see how many days you have remaining for each leave type (Annual, Sick, etc.).",
+        'how many leave days': "Please check your leave balance in the Leave Management section. The available days are shown with a progress bar.",
+        'request leave': "To request leave: 1) Go to Leave Management, 2) Select leave type, 3) Choose start and end dates, 4) Add reason, 5) Click Submit Request. HR will review your request.",
+        'payslip': "You can download your payslip from the Payslips section. Click 'Download PDF' next to any payslip to save it.",
+        'download payslip': "Go to Payslips page, find the payslip you want, and click the 'Download PDF' button. The file will open in a new tab where you can save or print it.",
+        'my payslip': "Your payslips are available in the Payslips section. You can view and download all your past payslips there.",
+        'payroll': "Payroll is processed monthly on the 5th of each month. You'll receive your payslip via email and can view it in the portal.",
+        'when is payroll': "Payroll is processed on the 5th of every month. If the 5th falls on a weekend, it's processed on the previous Friday.",
+        'salary': "Your salary information is displayed on your Dashboard. You can also view detailed breakdown in your payslips.",
+        'my salary': "Your basic monthly salary is shown on your Dashboard. For detailed breakdown including deductions, check your payslips.",
+        'payment date': "Salary payments are made on the 5th of each month. The funds are transferred to your registered bank account.",
+        'tax': "Tax (PAYE) is calculated based on Ghana's progressive tax system. Rates range from 0% to 30% depending on your income bracket.",
+        'ssnit': "SSNIT contribution is 5.5% of your gross salary. This is deducted automatically each month.",
+        'deductions': "Monthly deductions include: SSNIT (5.5%), PAYE Tax (progressive rates), and any other voluntary deductions you've authorized.",
+        'hr': "For HR-related questions, contact the HR department at hr@payhr.com or call extension 1001.",
+        'contact': "You can reach HR at hr@payhr.com or call +233 30 123 4567. Office hours are Monday-Friday, 8am-5pm.",
+        'password': "To change your password, go to My Profile, enter your current password and new password, then click 'Change Password'.",
+        'profile': "You can update your phone number, bank details, and change your password in the My Profile section.",
+        'help': "I can help you with:\n• Leave balances and requests\n• Payslip downloads\n• Payroll schedules\n• Tax and SSNIT information\n• Profile updates\n• General HR questions",
+        'hello': "Hello! 👋 I'm your PayHR Assistant. How can I help you today?",
+        'hi': "Hi there! 👋 I'm here to help with payroll, leave, and HR questions. What would you like to know?",
+        'thanks': "You're welcome! 😊 Anything else I can help you with?",
+        'thank you': "You're very welcome! Feel free to ask if you need anything else."
+    };
+
+    let employeeBasicSalary = 0;
+    let employeeName = '';
+
+    async function getEmployeeData() {
+        try {
+            const response = await authenticatedFetch(`${API_URL}/employee/dashboard`);
+            const data = await response.json();
+            employeeBasicSalary = data.employee?.basicSalary || 0;
+            employeeName = data.employee?.name?.split(' ')[0] || 'there';
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    async function getLeaveBalance() {
+        try {
+            const response = await authenticatedFetch(`${API_URL}/employee/dashboard`);
+            const data = await response.json();
+            if (data.leaveBalances) {
+                const annualLeave = data.leaveBalances.find(b => b.leaveTypeId === 1);
+                if (annualLeave) {
+                    return `${annualLeave.remainingDays} days remaining`;
+                }
+            }
+            return 'Check your Leave Management page for details';
+        } catch (error) {
+            return 'Unable to fetch leave balance';
+        }
+    }
+
+    function getNextPayrollDate() {
+        const today = new Date();
+        let nextPayroll = new Date(today.getFullYear(), today.getMonth(), 5);
+        if (today.getDate() > 5) {
+            nextPayroll = new Date(today.getFullYear(), today.getMonth() + 1, 5);
+        }
+        return nextPayroll.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    }
+
+    async function getAIResponse(userMessage) {
+        const msg = userMessage.toLowerCase().trim();
+
+        if (msg.includes('leave balance') || (msg.includes('how many') && msg.includes('leave')) || msg.includes('remaining leave')) {
+            const balance = await getLeaveBalance();
+            return `📊 Your current annual leave balance: **${balance}**\n\nYou can view all leave types in the Leave Management section.`;
+        }
+
+        if (msg.includes('download payslip') || msg.includes('get payslip') || (msg.includes('my payslip') && !msg.includes('how'))) {
+            return `📄 To download your payslip:\n\n1. Go to the **Payslips** tab\n2. Find the payslip you want\n3. Click the **Download PDF** button\n4. Save or print the file\n\nYour payslips are also emailed to you monthly.`;
+        }
+
+        if (msg.includes('my salary') || (msg.includes('how much') && msg.includes('salary')) || msg.includes('basic salary')) {
+            if (employeeBasicSalary > 0) {
+                return `💰 Your current monthly basic salary is **${formatCurrency(employeeBasicSalary)}**.\n\n📊 Breakdown:\n• SSNIT (5.5%): ${formatCurrency(employeeBasicSalary * 0.055)}\n• Approximate PAYE Tax: ${formatCurrency(employeeBasicSalary * 0.15)}\n• Estimated Net: ${formatCurrency(employeeBasicSalary * 0.795)}\n\n*Actual deductions may vary based on your specific situation.*`;
+            }
+            return '💰 Your salary information is displayed on your Dashboard. You can also check your latest payslip for detailed breakdown.';
+        }
+
+        if (msg.includes('payroll date') || msg.includes('next payroll') || msg.includes('when is payroll')) {
+            const nextDate = getNextPayrollDate();
+            return `📅 The next payroll will be processed on **${nextDate}**.\n\nSalaries are typically credited to your bank account within 1-2 business days after processing.`;
+        }
+
+        if (msg.includes('annual leave')) {
+            return '🏖️ **Annual Leave**: You have 22 days per year. This leave must be requested at least 2 weeks in advance and approved by your manager. Unused days can carry over to the next year (maximum 10 days).';
+        }
+        if (msg.includes('sick leave')) {
+            return '🤒 **Sick Leave**: You have 12 days per year. For sick leave lasting more than 2 days, a medical certificate is required. Notify your manager as soon as possible.';
+        }
+        if (msg.includes('maternity leave')) {
+            return '👶 **Maternity Leave**: 90 days of fully paid leave. Requires 30 days notice and medical certification.';
+        }
+        if (msg.includes('paternity leave')) {
+            return '👨‍👦 **Paternity Leave**: 10 days of fully paid leave. Must be taken within 30 days of the child\'s birth.';
+        }
+
+        for (const [key, response] of Object.entries(knowledgeBase)) {
+            if (msg.includes(key)) {
+                return response;
+            }
+        }
+
+        return `I understand you're asking about "${userMessage}". Here's what I can help with:\n\n📋 **Topics I can assist with:**\n• Leave balances and requests\n• Payslip downloads\n• Payroll schedules\n• Salary information\n• Tax and SSNIT deductions\n• Profile updates\n\nCould you please rephrase your question? I want to make sure I help you correctly! 🤗`;
+    }
+
+    function toggleChat() {
+        const win = document.getElementById('chat-window');
+        const isVisible = win.style.display === 'flex';
+        win.style.display = isVisible ? 'none' : 'flex';
+        if (!isVisible) {
+            document.getElementById('chat-input').focus();
+        }
+    }
+
+    function closeChat() {
+        document.getElementById('chat-window').style.display = 'none';
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('chat-input');
+        const message = input.value.trim();
+        if (!message) return;
+
+        addMessage(message, 'user');
+        input.value = '';
+        showTypingIndicator();
+
+        await getEmployeeData();
+        const response = await getAIResponse(message);
+
+        removeTypingIndicator();
+        setTimeout(() => {
+            addMessage(response, 'bot');
+        }, 300);
+    }
+
+    function addMessage(text, sender) {
+        const messagesDiv = document.getElementById('chat-messages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = sender === 'user' ? 'user-message' : 'bot-message';
+
+        if (sender === 'user') {
+            messageDiv.innerHTML = `
+                <div class="message-bubble">${text}</div>
+                <div style="width: 32px; height: 32px; background: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i class="fas fa-user" style="font-size: 14px; color: white;"></i>
+                </div>
+            `;
+        } else {
+            messageDiv.innerHTML = `
+                <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <i class="fas fa-robot" style="font-size: 14px; color: white;"></i>
+                </div>
+                <div class="message-bubble">${text.replace(/\n/g, '<br>')}</div>
+            `;
+        }
+
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const messagesDiv = document.getElementById('chat-messages');
+        const typingDiv = document.createElement('div');
+        typingDiv.id = 'typing-indicator';
+        typingDiv.className = 'bot-message';
+        typingDiv.innerHTML = `
+            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <i class="fas fa-robot" style="font-size: 14px; color: white;"></i>
+            </div>
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        `;
+        messagesDiv.appendChild(typingDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.getElementById('chat-toggle');
+        const close = document.getElementById('chat-close');
+        const send = document.getElementById('chat-send');
+        const input = document.getElementById('chat-input');
+        const quickQs = document.querySelectorAll('.quick-q');
+
+        if (toggle) toggle.onclick = toggleChat;
+        if (close) close.onclick = closeChat;
+        if (send) send.onclick = sendMessage;
+        if (input) input.onkeypress = (e) => {
+            if (e.key === 'Enter') sendMessage();
+        };
+
+        quickQs.forEach(q => {
+            q.onclick = () => {
+                const question = q.getAttribute('data-question');
+                document.getElementById('chat-input').value = question;
+                sendMessage();
+            };
+        });
+    });
+</script>
+
+    <!-- AI Chat Assistant -->
+    <div id="chat-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <div id="chat-toggle">
+            <i class="fas fa-robot"></i>
+        </div>
+        
+        <div id="chat-window" style="display: none;">
+            <div class="chat-header">
+                <div class="chat-header-content">
+                    <div class="chat-header-title">
+                        <i class="fas fa-robot"></i>
+                        <div>
+                            <h3>PayHR Assistant</h3>
+                            <div class="chat-header-subtitle">AI-Powered Payroll Help</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-times chat-close" id="chat-close"></i>
+                </div>
+            </div>
+            
+            <div id="chat-messages"></div>
+            
+            <div class="quick-questions">
+                <button class="quick-q" data-question="How many leave days do I have?">🌴 Leave balance</button>
+                <button class="quick-q" data-question="When is the next payroll?">📅 Payroll date</button>
+                <button class="quick-q" data-question="How to download payslip?">📄 Get payslip</button>
+                <button class="quick-q" data-question="What is my salary?">💰 My salary</button>
+            </div>
+            
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Ask me anything...">
+                <button class="chat-send" id="chat-send">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

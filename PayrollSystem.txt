@@ -1,0 +1,61 @@
+PayrollSystem/
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   │   └── database.js
+│   │   ├── models/
+│   │   │   ├── Employee.js
+│   │   │   ├── Payroll.js
+│   │   │   └── User.js
+│   │   ├── controllers/
+│   │   │   ├── authController.js
+│   │   │   ├── employeeController.js
+│   │   │   └── payrollController.js
+│   │   ├── routes/
+│   │   │   ├── authRoutes.js
+│   │   │   ├── employeeRoutes.js
+│   │   │   └── payrollRoutes.js
+│   │   ├── middleware/
+│   │   │   └── auth.js
+│   │   └── app.js
+│   ├── package.json
+│   └── .env
+├── frontend/
+│   ├── public/
+│   │   └── index.html
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Layout/
+│   │   │   │   ├── Navbar.jsx
+│   │   │   │   └── Sidebar.jsx
+│   │   │   ├── Dashboard/
+│   │   │   │   ├── StatsCards.jsx
+│   │   │   │   └── RecentActivity.jsx
+│   │   │   ├── Employees/
+│   │   │   │   ├── EmployeeList.jsx
+│   │   │   │   ├── EmployeeForm.jsx
+│   │   │   │   └── EmployeeDetails.jsx
+│   │   │   ├── Payroll/
+│   │   │   │   ├── PayrollList.jsx
+│   │   │   │   ├── PayrollGenerate.jsx
+│   │   │   │   └── Payslip.jsx
+│   │   │   └── Auth/
+│   │   │       ├── Login.jsx
+│   │   │       └── PrivateRoute.jsx
+│   │   ├── pages/
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Employees.jsx
+│   │   │   ├── Payroll.jsx
+│   │   │   ├── Reports.jsx
+│   │   │   └── Login.jsx
+│   │   ├── services/
+│   │   │   ├── api.js
+│   │   │   ├── authService.js
+│   │   │   └── employeeService.js
+│   │   ├── App.jsx
+│   │   ├── index.js
+│   │   └── index.css
+│   ├── package.json
+│   └── tailwind.config.js
+└── database/
+    └── schema.sql

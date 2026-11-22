@@ -1,0 +1,92 @@
+{
+    "info": {
+        "name": "PayHR Payroll System",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        { "key": "base_url", "value": "http://localhost:5000" },
+        { "key": "token", "value": "" }
+    ],
+    "item": [
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login Admin",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/login",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"username\":\"admin\",\"password\":\"admin123\"}"
+                        }
+                    }
+                },
+                {
+                    "name": "Login HR",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/login",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"username\":\"hr_manager\",\"password\":\"hr123\"}"
+                        }
+                    }
+                },
+                {
+                    "name": "Login Employee",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/auth/login",
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"username\":\"kofi.asante\",\"password\":\"employee123\"}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Employees",
+            "item": [
+                {
+                    "name": "Get All Employees",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{base_url}}/api/employees",
+                        "header": [{ "key": "x-auth-token", "value": "{{token}}" }]
+                    }
+                },
+                {
+                    "name": "Add Employee",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/employees",
+                        "header": [{ "key": "x-auth-token", "value": "{{token}}" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"first_name\":\"New\",\"last_name\":\"Employee\",\"email\":\"new@company.com\",\"position\":\"Developer\",\"department_name\":\"Engineering\",\"basic_salary\":8000}"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Payroll",
+            "item": [
+                {
+                    "name": "Calculate Payroll",
+                    "request": {
+                        "method": "POST",
+                        "url": "{{base_url}}/api/payroll/calculate",
+                        "header": [{ "key": "x-auth-token", "value": "{{token}}" }],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"grossSalary\":10000,\"overtime\":500,\"allowances\":1000,\"deductions\":200}"
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

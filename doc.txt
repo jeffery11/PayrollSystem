@@ -1,0 +1,6 @@
+Username	Password	Role
+admin	admin123	Administrator
+hr_manager	hr123	HR Manager
+kofi.asante	employee123	Employee
+ama.mensah	employee123	Employee
+yaw.boateng	employee123	Employee
