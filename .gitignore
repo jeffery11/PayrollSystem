@@ -3,3 +3,4 @@ node_modules/
 .env
 *.env
 .DS_Store
+backend/access.log # run this line by itself
